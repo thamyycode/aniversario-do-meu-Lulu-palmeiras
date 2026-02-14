@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Aniversário Palmeiras</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body, html{
+    width:100%; height:100%;
+    font-family:'Open Sans',sans-serif;
+    overflow:hidden;
+    background: linear-gradient(#006600, #009900); /* fundo gramado */
+  }
+  canvas{position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;}
+
+  .card{
+    position:absolute;
+    top:50%; left:50%;
+    transform: translate(-50%,-50%);
+    background: rgba(0,0,0,0.5);
+    border:4px solid #00ff00;
+    border-radius:25px;
+    padding:30px;
+    max-width:700px;
+    text-align:center;
+    z-index:1;
+    box-shadow:0 0 30px #00ff00;
+  }
+
+  .foto{
+    width:200px;
+    border-radius:50%;
+    border: 4px solid #00ff00;
+    margin-bottom:20px;
+    box-shadow:0 0 20px #00ff00;
+  }
+
+  h1{
+    font-family:'Dancing Script', cursive;
+    font-size:3rem;
+    color:#00ff00;
+    text-shadow:0 0 10px #00ff00,0 0 20px #00ff00;
+    margin-bottom:20px;
+  }
+
+  p{
+    color:#fff;
+    font-size:1.2rem;
+    line-height:1.6;
+  }
+
+  .clique{
+    margin-top:20px;
+    font-size:1rem;
+    color:#00ff00;
+    font-weight:bold;
+    text-shadow:0 0 10px #00ff00;
+  }
+
+  .assinatura{
+    margin-top:20px;
+    font-size:28px;
+    color:#00ff00;
+    font-weight:bold;
+    text-shadow:0 0 10px #00ff00;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="card">
+  <img src="Foto.jpg." alt="Amor" class="foto">
+  <h1>Feliz Aniversário 💚</h1>
+  <p>
+    Finalmente chegou o dia mais especial: o seu aniversário, 22 anos!  
+    Estou tão feliz por celebrar esse momento contigo, meu amor. Cada instante ao seu lado me faz perceber o quanto sou sortuda por ter você na minha vida.<br><br>
+    Hoje não é apenas um dia comum, é <strong>o seu dia</strong>. Já te entreguei seu presente, mas quis fazer algo ainda mais especial: criei este site simples, feito com muito carinho, só pra você. Meu primeiro site, feito com amor e dedicação!<br><br>
+    Você é o meu homem lindo, cheiroso, engraçado, inteligente e, às vezes, um pouquinho chato. Mas o que seria de mim sem a sua chatice? ❤️<br><br>
+    Obrigada por tudo, e por me ensinar e me inspirar todos os dias. Aprendi tanto com você, e ainda estou aprendendo muito.<br><br>
+    <strong>Feliz aniversário!</strong> É seu aniversário, mas quem se sente presenteada sou eu, por ter você na minha vida. 💖
+  </p>
+  <div class="clique">✨ Clique na tela para espalhar os  simbolos do Palmeiras! ✨</div>
+  <div class="assinatura">Feito por Thamy 💎</div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Imagem do escudo do Palmeiras
+let palmeirasImg = new Image();
+palmeirasImg.src = 'palmeiras.png'; // mesma pasta que o HTML
+
+// Desenhar imagem dentro de coração maior
+function drawHeartImage(img,x,y,size){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.beginPath();
+  ctx.moveTo(0,-size/2);
+  ctx.bezierCurveTo(size/2,-size/2,size/2,size/2,0,size/2);
+  ctx.bezierCurveTo(-size/2,size/2,-size/2,-size/2,0,-size/2);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(img,-size/2,-size/2,size,size);
+  ctx.restore();
+}
+
+// Classe Heart
+function Heart(x,y,size,speedX,speedY,img){
+  this.x=x;
+  this.y=y;
+  this.size=size;
+  this.speedX=speedX;
+  this.speedY=speedY;
+  this.img=img;
+  this.draw=function(){
+    if(this.img) drawHeartImage(this.img,this.x,this.y,this.size);
+  }
+  this.update=function(){
+    this.x+=this.speedX;
+    this.y+=this.speedY;
+    if(this.x>canvas.width) this.x=0;
+    if(this.x<0) this.x=canvas.width;
+    if(this.y>canvas.height) this.y=0;
+    if(this.y<0) this.y=canvas.height;
+    this.draw();
+  }
+}
+
+let hearts=[];
+
+// Clique: explode corações grandes
+canvas.addEventListener('click', e=>{
+  for(let i=0;i<15;i++){
+    hearts.push(new Heart(
+      e.clientX,
+      e.clientY,
+      Math.random()*50+50, // tamanho maior
+      (Math.random()-0.5)*4,
+      (Math.random()-0.5)*4,
+      palmeirasImg
+    ));
+  }
+});
+
+// Animação
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  hearts.forEach(h=>{
+    h.update();
+  });
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// Redimensionar janela
+window.addEventListener('resize', ()=>{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
